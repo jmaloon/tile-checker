@@ -8,23 +8,31 @@ function App() {
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
+  function handleUploadButton() {
+    uploadInputRef.current?.click();
+  }
+
   function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    readAsDataURL(file);
+    readFileOrBlob(file);
   }
 
   async function handlePaste() {
     try {
       const clipboardItems = await navigator.clipboard.read();
-      for (const clipboardItem of clipboardItems) {
-        const imageType = clipboardItem.types.find((type) =>
-          type.startsWith("image/")
-        );
 
-        if (!imageType) return;
-        const blob = await clipboardItem.getType(imageType);
-        readAsDataURL(blob);
-      }
+      const clipboardItemWithImageType = clipboardItems.find((item) =>
+        item.types.some((type) => type.startsWith("image/"))
+      );
+      if (!clipboardItemWithImageType) return;
+
+      const imageType = clipboardItemWithImageType.types.find((type) =>
+        type.startsWith("image/")
+      );
+      if (!imageType) return;
+
+      const blob = await clipboardItemWithImageType.getType(imageType);
+      readFileOrBlob(blob);
     } catch (err) {
       console.error(err);
     }
@@ -37,7 +45,7 @@ function App() {
     );
   }
 
-  function readAsDataURL(fileOrBlob: File | Blob | undefined) {
+  function readFileOrBlob(fileOrBlob: File | Blob | undefined) {
     if (!fileOrBlob) return;
 
     var reader = new FileReader();
@@ -53,14 +61,12 @@ function App() {
   }
 
   return (
-    <>
-      <main className="main">
-        <h1>Tile Checker</h1>
-        <p>Upload an image to quickly test the tile-ness of your image</p>
-        <button onClick={() => uploadInputRef.current?.click()}>
-          Select a photo
-        </button>
-        <button onClick={handlePaste}>Copy from clipboard</button>
+    <main className="main">
+      <h1>Tile Checker</h1>
+      <p>Tool for checking the ability to tile your image</p>
+      <div className="main-actions">
+        <button onClick={handleUploadButton}>Upload</button>
+        <button onClick={handlePaste}>Paste</button>
         <input
           defaultValue={initialBackgroundSize}
           type="range"
@@ -71,7 +77,7 @@ function App() {
           step="10"
           onChange={handleSizeChange}
         />
-      </main>
+      </div>
 
       <input
         ref={uploadInputRef}
@@ -81,7 +87,7 @@ function App() {
         accept="image/png, image/jpeg"
         onChange={handleUpload}
       />
-    </>
+    </main>
   );
 }
 

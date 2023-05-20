@@ -1,3 +1,19 @@
+:root {
+  --hue-track-background: buttonface;
+  --hue-track-width: 100%;
+  --hue-track-height: 35.5px;
+  --hue-track-border-color: buttonborder;
+  --hue-track-border-width: 1px;
+  --hue-track-border-radius: 2px;
+
+  --hue-thumb-color: white;
+  --hue-thumb-height: 44px;
+  --hue-thumb-width: 30px;
+  --hue-thumb-border-color: buttonborder;
+  --hue-thumb-border-width: 1px;
+  --hue-thumb-border-radius: 4px;
+}
+
 body {
   margin: 0;
   width: 100%;
@@ -20,9 +36,60 @@ h1 {
 }
 p {
   margin-top: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+}
+.main-actions {
+  display: flex;
+  gap: 4px;
 }
 
+button {
+  padding: 8px 16px;
+}
 input[type="file"] {
   display: none;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: var(--hue-track-width);
+  margin: calc((var(--hue-track-height) - var(--hue-thumb-height)) / 2) 0;
+  background: none;
+  cursor: pointer;
+}
+input[type="range"]:focus {
+  outline: none;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  width: var(--hue-track-width);
+  height: var(--hue-track-height);
+  background: var(--hue-track-background);
+  border: var(--hue-track-border-width) solid var(--hue-track-border-color);
+  border-radius: var(--hue-track-border-radius);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--hue-thumb-width);
+  height: var(--hue-thumb-height);
+  margin-top: calc(
+    ((var(--hue-track-border-width) * -2 + var(--hue-track-height)) / 2) -
+      (var(--hue-thumb-height) / 2)
+  );
+  background: var(--hue-thumb-color);
+  border: var(--hue-thumb-border-width) solid var(--hue-thumb-border-color);
+  border-radius: var(--hue-thumb-border-radius);
+}
+input[type="range"]::-moz-range-track {
+  width: var(--hue-track-width);
+  height: var(--hue-track-height);
+  background: var(--hue-track-background);
+  border: var(--hue-track-border-width) solid var(--hue-track-border-color);
+  border-radius: var(--hue-track-border-radius);
+}
+input[type="range"]::-moz-range-thumb {
+  width: var(--hue-thumb-width);
+  height: var(--hue-thumb-height);
+  background: var(--hue-thumb-color);
+  border: var(--hue-thumb-border-width) solid var(--hue-thumb-border-color);
+  border-radius: var(--hue-thumb-border-radius);
 }
