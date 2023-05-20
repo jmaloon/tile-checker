@@ -44,6 +44,7 @@ function App() {
           name="image_size_slider"
           min="10"
           max="1000"
+          step="10"
           onChange={handleSizeChange}
         />
       </main>
