@@ -10,16 +10,24 @@ function App() {
 
   function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    if (!file) return;
-    var reader = new FileReader();
+    readAsDataURL(file);
+  }
 
-    reader.onload = function (e) {
-      const result = e.target?.result;
-      if (!result) return;
-      document.body.style.setProperty("background-image", `url(${result})`);
-    };
+  async function handlePaste() {
+    try {
+      const clipboardItems = await navigator.clipboard.read();
+      for (const clipboardItem of clipboardItems) {
+        const imageType = clipboardItem.types.find((type) =>
+          type.startsWith("image/")
+        );
 
-    reader.readAsDataURL(file);
+        if (!imageType) return;
+        const blob = await clipboardItem.getType(imageType);
+        readAsDataURL(blob);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   function handleSizeChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -27,6 +35,21 @@ function App() {
       "background-size",
       `${event.target.value}px`
     );
+  }
+
+  function readAsDataURL(fileOrBlob: File | Blob | undefined) {
+    if (!fileOrBlob) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+      const result = event.target?.result;
+      if (!result) return;
+
+      document.body.style.setProperty("background-image", `url(${result})`);
+    };
+
+    reader.readAsDataURL(fileOrBlob);
   }
 
   return (
@@ -37,6 +60,7 @@ function App() {
         <button onClick={() => uploadInputRef.current?.click()}>
           Select a photo
         </button>
+        <button onClick={handlePaste}>Copy from clipboard</button>
         <input
           defaultValue={initialBackgroundSize}
           type="range"
